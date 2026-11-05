@@ -1,0 +1,858 @@
+/*
+ * Locus — an Obsidian theme for computational biologists.
+ *
+ * Color is categorical throughout: callouts, syntax tokens and task states use
+ * the colorblind-safe Okabe–Ito palette; top-level folders get an even
+ * twelve-hue spectrum. Headings use the Okabe–Ito
+ * hue family (plus a violet), but set to one OKLCH lightness and chroma, so no
+ * level shouts louder than another; size alone carries the hierarchy.
+ * Tables are typeset booktabs-style with tabular numerals; genomic text formats
+ * (FASTA/FASTQ, VCF/BED/SAM/GTF) get sensible wrapping in code blocks.
+ */
+
+/* @settings
+
+name: Locus
+id: locus
+settings:
+  -
+    id: locus-mono-headings
+    title: Monochrome headings
+    description: Use plain text color for headings
+    type: class-toggle
+  -
+    id: locus-no-heading-numbers
+    title: Disable heading numbers
+    description: Do not number H2–H6 (1, 1.1, 1.1.1, …)
+    type: class-toggle
+  -
+    id: locus-no-equation-numbers
+    title: Disable equation numbers
+    description: Do not number display math blocks
+    type: class-toggle
+  -
+    id: locus-no-code-line-numbers
+    title: Disable code block line numbers
+    type: class-toggle
+  -
+    id: locus-no-task-urgency
+    title: Disable due-date urgency for Tasks
+    type: class-toggle
+  -
+    id: locus-no-folder-colors
+    title: Disable folder colors
+    description: Do not color top-level folders in the file explorer
+    type: class-toggle
+  -
+    id: locus-grid-tables
+    title: Grid tables
+    description: Draw full cell borders instead of booktabs rules
+    type: class-toggle
+  -
+    id: locus-no-code-labels
+    title: Hide code block language labels
+    type: class-toggle
+  -
+    id: locus-no-checkboxes
+    title: Disable alternate checkbox icons
+    type: class-toggle
+  -
+    id: locus-no-active-line
+    title: Disable active line highlight
+    type: class-toggle
+*/
+
+
+/* ---------- Palette ---------- */
+
+body {
+  --font-monospace-theme: "JetBrains Mono", "SF Mono", ui-monospace, Menlo, monospace;
+  --accent-h: 202;
+}
+
+.theme-light {
+  --accent-s: 100%;
+  --accent-l: 35%;
+
+  --color-base-00: #fcfcfb;
+  --color-base-05: #f9f9f7;
+  --color-base-10: #f5f5f2;
+  --color-base-20: #efefeb;
+  --color-base-25: #e7e7e2;
+  --color-base-30: #dddcd6;
+  --color-base-35: #d0cfc8;
+  --color-base-40: #b9b8b0;
+  --color-base-50: #8f908a;
+  --color-base-60: #71726c;
+  --color-base-70: #5d5e59;
+  --color-base-100: #1d1e1c;
+
+  /* Okabe–Ito, darkened to ≥4.5:1 contrast for use as text */
+  --oi-blue: #0072b2;
+  --oi-sky: #1874a6;
+  --oi-green: #00785a;
+  --oi-yellow: #7d7100;
+  --oi-orange: #9a6200;
+  --oi-vermillion: #b44d00;
+  --oi-purple: #a64a7e;
+  --oi-violet: #6747a8;
+  --oi-yellow-fill: #f0e442;
+
+  /* headings: OKLCH L=0.52, C=0.12 (slate C=0.02); all ≥5:1 contrast */
+  --heading-blue: #156ea8;
+  --heading-orange: #9f5023;
+  --heading-green: #017c59;
+  --heading-rose: #984977;
+  --heading-violet: #6f59a6;
+  --heading-slate: #606a74;
+
+  --text-highlight-bg: rgba(240, 228, 66, 0.45);
+}
+
+.theme-dark {
+  --accent-s: 77%;
+  --accent-l: 62%;
+  --text-on-accent: #0b1b26;
+
+  --color-base-00: #16181b;
+  --color-base-05: #191b1f;
+  --color-base-10: #1c1f23;
+  --color-base-20: #202328;
+  --color-base-25: #262a30;
+  --color-base-30: #2c3037;
+  --color-base-35: #353a42;
+  --color-base-40: #464c55;
+  --color-base-50: #6b717b;
+  --color-base-60: #8b919b;
+  --color-base-70: #a3a9b2;
+  --color-base-100: #e2e4e8;
+
+  /* Okabe–Ito, as published (vermillion and green lifted slightly) */
+  --oi-blue: #56b4e9;
+  --oi-sky: #7cc7f2;
+  --oi-green: #2dbe93;
+  --oi-yellow: #f0e442;
+  --oi-orange: #e69f00;
+  --oi-vermillion: #ef7d3c;
+  --oi-purple: #d98bb6;
+  --oi-violet: #ae97ea;
+  --oi-yellow-fill: #f0e442;
+
+  /* headings: OKLCH L=0.80, C=0.12 (slate C=0.02); all ≥9:1 contrast */
+  --heading-blue: #7ec6ff;
+  --heading-orange: #fda579;
+  --heading-green: #69d6aa;
+  --heading-rose: #f69ece;
+  --heading-violet: #c3affe;
+  --heading-slate: #b3bfca;
+
+  --text-highlight-bg: rgba(240, 228, 66, 0.25);
+}
+
+/* Route Obsidian's named colors through the palette so plugins and core UI
+   (graph, tags, bases, canvas) inherit colorblind-safe hues too. */
+.theme-light,
+.theme-dark {
+  --color-red: var(--oi-vermillion);
+  --color-orange: var(--oi-orange);
+  --color-yellow: var(--oi-yellow);
+  --color-green: var(--oi-green);
+  --color-cyan: var(--oi-sky);
+  --color-blue: var(--oi-blue);
+  --color-purple: var(--oi-violet);
+  --color-pink: var(--oi-purple);
+
+  --text-error: var(--oi-vermillion);
+  --text-warning: var(--oi-orange);
+  --text-success: var(--oi-green);
+}
+
+
+/* ---------- Typography ---------- */
+
+body {
+  --line-height-normal: 1.6;
+  --p-spacing: 1rem;
+
+  --h1-size: 1.75em;
+  --h2-size: 1.45em;
+  --h3-size: 1.25em;
+  --h4-size: 1.1em;
+  --h5-size: 1em;
+  --h6-size: 0.9em;
+  --h6-variant: all-small-caps;
+
+  --h1-color: var(--heading-blue);
+  --h2-color: var(--heading-orange);
+  --h3-color: var(--heading-green);
+  --h4-color: var(--heading-rose);
+  --h5-color: var(--heading-violet);
+  --h6-color: var(--heading-slate);
+  --inline-title-color: var(--text-normal);
+
+  --bold-color: var(--text-normal);
+  --hr-thickness: 1px;
+  --blockquote-border-thickness: 2px;
+  --blockquote-border-color: var(--background-modifier-border-focus);
+  --blockquote-color: var(--text-muted);
+
+  --link-decoration: none;
+  --link-external-decoration: none;
+  --link-unresolved-decoration-style: dotted;
+}
+
+body.locus-mono-headings {
+  --h1-color: var(--text-normal);
+  --h2-color: var(--text-normal);
+  --h3-color: var(--text-normal);
+  --h4-color: var(--text-normal);
+  --h5-color: var(--text-normal);
+  --h6-color: var(--text-muted);
+}
+
+/* Heading numbers: H1 is the note title, so numbering starts at H2 (1, 1.1, 1.1.1)
+ * and every H1 restarts it. Reading view wraps each heading in a sibling
+ * div.el-hN; live preview gives each heading line .HyperMD-header-N. Both
+ * views render only the part of a note near the viewport, so in very long
+ * notes the count covers only headings currently in the DOM. */
+
+/* All note-level counters (headings, code lines, equations) are created once on
+   the container, in one rule since a second counter-reset would override it.
+   Siblings then zero them with counter-set, because a sibling's counter-reset
+   would only start a nested counter that later siblings never see. */
+:is(.markdown-preview-sizer, .markdown-source-view.mod-cm6 .cm-content) {
+  counter-reset: locus-h2 locus-h3 locus-h4 locus-h5 locus-h6 locus-code locus-eq;
+}
+body:not(.locus-no-heading-numbers) :is(.markdown-preview-sizer > .el-h1, .is-live-preview .HyperMD-header-1) {
+  counter-set: locus-h2 0 locus-h3 0 locus-h4 0 locus-h5 0 locus-h6 0;
+}
+body:not(.locus-no-heading-numbers) :is(.markdown-preview-sizer > .el-h2, .is-live-preview .HyperMD-header-2) {
+  counter-increment: locus-h2;
+  counter-set: locus-h3 0 locus-h4 0 locus-h5 0 locus-h6 0;
+}
+body:not(.locus-no-heading-numbers) :is(.markdown-preview-sizer > .el-h3, .is-live-preview .HyperMD-header-3) {
+  counter-increment: locus-h3;
+  counter-set: locus-h4 0 locus-h5 0 locus-h6 0;
+}
+body:not(.locus-no-heading-numbers) :is(.markdown-preview-sizer > .el-h4, .is-live-preview .HyperMD-header-4) {
+  counter-increment: locus-h4;
+  counter-set: locus-h5 0 locus-h6 0;
+}
+body:not(.locus-no-heading-numbers) :is(.markdown-preview-sizer > .el-h5, .is-live-preview .HyperMD-header-5) {
+  counter-increment: locus-h5;
+  counter-set: locus-h6 0;
+}
+body:not(.locus-no-heading-numbers) :is(.markdown-preview-sizer > .el-h6, .is-live-preview .HyperMD-header-6) {
+  counter-increment: locus-h6;
+}
+
+body:not(.locus-no-heading-numbers) :is(.markdown-preview-sizer > div > :is(h2, h3, h4, h5, h6),
+  .is-live-preview :is(.HyperMD-header-2, .HyperMD-header-3, .HyperMD-header-4, .HyperMD-header-5, .HyperMD-header-6))::before {
+  margin-inline-end: 0.5em;
+  color: color-mix(in oklch, currentColor 60%, transparent);
+  font-variant-numeric: tabular-nums;
+}
+body:not(.locus-no-heading-numbers) :is(.markdown-preview-sizer > .el-h2 > h2, .is-live-preview .HyperMD-header-2)::before {
+  content: counter(locus-h2);
+}
+body:not(.locus-no-heading-numbers) :is(.markdown-preview-sizer > .el-h3 > h3, .is-live-preview .HyperMD-header-3)::before {
+  content: counter(locus-h2) "." counter(locus-h3);
+}
+body:not(.locus-no-heading-numbers) :is(.markdown-preview-sizer > .el-h4 > h4, .is-live-preview .HyperMD-header-4)::before {
+  content: counter(locus-h2) "." counter(locus-h3) "." counter(locus-h4);
+}
+body:not(.locus-no-heading-numbers) :is(.markdown-preview-sizer > .el-h5 > h5, .is-live-preview .HyperMD-header-5)::before {
+  content: counter(locus-h2) "." counter(locus-h3) "." counter(locus-h4) "." counter(locus-h5);
+}
+body:not(.locus-no-heading-numbers) :is(.markdown-preview-sizer > .el-h6 > h6, .is-live-preview .HyperMD-header-6)::before {
+  content: counter(locus-h2) "." counter(locus-h3) "." counter(locus-h4) "." counter(locus-h5) "." counter(locus-h6);
+}
+
+/* Outline pane: items carry no heading level in the DOM, only nesting, so
+ * color and number follow depth. Depth equals level whenever a note starts
+ * with its one H1 and never skips a level. Each children container opens a
+ * nested counter, so counters() yields 1, 1.1, 1.1.1 with depth 1 (the H1)
+ * left unnumbered. */
+
+.workspace-leaf-content[data-type="outline"] .view-content > div > .tree-item > .tree-item-self {
+  color: var(--h1-color);
+}
+.workspace-leaf-content[data-type="outline"] .view-content > div > .tree-item
+  > .tree-item-children > .tree-item > .tree-item-self {
+  color: var(--h2-color);
+}
+.workspace-leaf-content[data-type="outline"] .view-content > div > .tree-item
+  > .tree-item-children > .tree-item > .tree-item-children > .tree-item > .tree-item-self {
+  color: var(--h3-color);
+}
+.workspace-leaf-content[data-type="outline"] .view-content > div > .tree-item
+  > .tree-item-children > .tree-item > .tree-item-children > .tree-item
+  > .tree-item-children > .tree-item > .tree-item-self {
+  color: var(--h4-color);
+}
+.workspace-leaf-content[data-type="outline"] .view-content > div > .tree-item
+  > .tree-item-children > .tree-item > .tree-item-children > .tree-item
+  > .tree-item-children > .tree-item > .tree-item-children > .tree-item > .tree-item-self {
+  color: var(--h5-color);
+}
+.workspace-leaf-content[data-type="outline"] .view-content > div > .tree-item
+  > .tree-item-children > .tree-item > .tree-item-children > .tree-item
+  > .tree-item-children > .tree-item > .tree-item-children > .tree-item
+  > .tree-item-children > .tree-item > .tree-item-self {
+  color: var(--h6-color);
+}
+
+body:not(.locus-no-heading-numbers) .workspace-leaf-content[data-type="outline"] .tree-item-children {
+  counter-reset: locus-outline;
+}
+body:not(.locus-no-heading-numbers) .workspace-leaf-content[data-type="outline"] .tree-item-children > .tree-item {
+  counter-increment: locus-outline;
+}
+body:not(.locus-no-heading-numbers) .workspace-leaf-content[data-type="outline"] .tree-item-children > .tree-item > .tree-item-self > .tree-item-inner::before {
+  content: counters(locus-outline, ".");
+  margin-inline-end: 0.5em;
+  color: color-mix(in oklch, currentColor 60%, transparent);
+  font-variant-numeric: tabular-nums;
+}
+
+.markdown-rendered a:hover,
+.markdown-source-view .cm-hmd-internal-link:hover,
+.markdown-source-view .cm-url:hover {
+  text-decoration: underline;
+}
+
+/* Numbers line up wherever they are likely to be compared. */
+.markdown-rendered table,
+.markdown-source-view .cm-table-widget table,
+.metadata-container,
+.bases-view,
+.status-bar {
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* ---------- Code ---------- */
+
+body {
+  --code-size: 0.875em;
+  --code-radius: 4px;
+  --code-normal: var(--text-normal);
+  --code-comment: var(--text-faint);
+  --code-punctuation: var(--text-muted);
+  --code-operator: var(--text-muted);
+  --code-keyword: var(--oi-purple);
+  --code-function: var(--oi-blue);
+  --code-string: var(--oi-green);
+  --code-value: var(--oi-vermillion);
+  --code-property: var(--oi-orange);
+  --code-tag: var(--oi-vermillion);
+  --code-important: var(--oi-orange);
+}
+
+.markdown-rendered pre,
+.markdown-source-view.mod-cm6 .HyperMD-codeblock {
+  font-variant-ligatures: none;
+}
+
+.markdown-rendered .token.comment,
+.markdown-source-view.mod-cm6 .cm-comment {
+  font-style: italic;
+}
+
+/* Inline code: tinted box, normal text color. */
+.markdown-rendered :not(pre) > code,
+.markdown-source-view.mod-cm6 .cm-inline-code:not(.cm-formatting) {
+  color: var(--text-normal);
+  background-color: var(--background-modifier-hover);
+}
+
+/* Language label in reading view (live preview already shows one). */
+.markdown-rendered pre::after {
+  position: absolute;
+  top: 0.4em;
+  right: 0.75em;
+  font-family: var(--font-monospace);
+  font-size: var(--font-ui-smaller);
+  color: var(--text-faint);
+  pointer-events: none;
+}
+.markdown-rendered pre:hover::after,
+.locus-no-code-labels .markdown-rendered pre::after {
+  display: none;
+}
+.markdown-rendered pre[class~="language-bash" i]::after { content: "bash"; }
+.markdown-rendered pre[class~="language-sh" i]::after { content: "sh"; }
+.markdown-rendered pre[class~="language-shell" i]::after { content: "shell"; }
+.markdown-rendered pre[class~="language-zsh" i]::after { content: "zsh"; }
+.markdown-rendered pre[class~="language-console" i]::after { content: "console"; }
+.markdown-rendered pre[class~="language-python" i]::after { content: "python"; }
+.markdown-rendered pre[class~="language-py" i]::after { content: "python"; }
+.markdown-rendered pre[class~="language-r" i]::after { content: "R"; }
+.markdown-rendered pre[class~="language-julia" i]::after { content: "julia"; }
+.markdown-rendered pre[class~="language-sql" i]::after { content: "SQL"; }
+.markdown-rendered pre[class~="language-snakemake" i]::after { content: "snakemake"; }
+.markdown-rendered pre[class~="language-smk" i]::after { content: "snakemake"; }
+.markdown-rendered pre[class~="language-nextflow" i]::after { content: "nextflow"; }
+.markdown-rendered pre[class~="language-nf" i]::after { content: "nextflow"; }
+.markdown-rendered pre[class~="language-groovy" i]::after { content: "groovy"; }
+.markdown-rendered pre[class~="language-wdl" i]::after { content: "WDL"; }
+.markdown-rendered pre[class~="language-yaml" i]::after { content: "yaml"; }
+.markdown-rendered pre[class~="language-yml" i]::after { content: "yaml"; }
+.markdown-rendered pre[class~="language-json" i]::after { content: "json"; }
+.markdown-rendered pre[class~="language-toml" i]::after { content: "toml"; }
+.markdown-rendered pre[class~="language-dockerfile" i]::after { content: "dockerfile"; }
+.markdown-rendered pre[class~="language-makefile" i]::after { content: "makefile"; }
+.markdown-rendered pre[class~="language-awk" i]::after { content: "awk"; }
+.markdown-rendered pre[class~="language-perl" i]::after { content: "perl"; }
+.markdown-rendered pre[class~="language-c" i]::after { content: "C"; }
+.markdown-rendered pre[class~="language-cpp" i]::after { content: "C++"; }
+.markdown-rendered pre[class~="language-rust" i]::after { content: "rust"; }
+.markdown-rendered pre[class~="language-js" i]::after { content: "js"; }
+.markdown-rendered pre[class~="language-javascript" i]::after { content: "js"; }
+.markdown-rendered pre[class~="language-latex" i]::after { content: "LaTeX"; }
+.markdown-rendered pre[class~="language-tex" i]::after { content: "LaTeX"; }
+.markdown-rendered pre[class~="language-markdown" i]::after { content: "markdown"; }
+.markdown-rendered pre[class~="language-diff" i]::after { content: "diff"; }
+.markdown-rendered pre[class~="language-fasta" i]::after { content: "FASTA"; }
+.markdown-rendered pre[class~="language-fastq" i]::after { content: "FASTQ"; }
+.markdown-rendered pre[class~="language-dna" i]::after { content: "DNA"; }
+.markdown-rendered pre[class~="language-rna" i]::after { content: "RNA"; }
+.markdown-rendered pre[class~="language-protein" i]::after { content: "protein"; }
+.markdown-rendered pre[class~="language-sam" i]::after { content: "SAM"; }
+.markdown-rendered pre[class~="language-vcf" i]::after { content: "VCF"; }
+.markdown-rendered pre[class~="language-bed" i]::after { content: "BED"; }
+.markdown-rendered pre[class~="language-gtf" i]::after { content: "GTF"; }
+.markdown-rendered pre[class~="language-gff" i]::after { content: "GFF"; }
+.markdown-rendered pre[class~="language-tsv" i]::after { content: "TSV"; }
+.markdown-rendered pre[class~="language-csv" i]::after { content: "CSV"; }
+
+/* Line numbers, editor only: reading view renders a code block as one run of
+   text with no per-line elements to count. Fence lines restart the count. */
+body:not(.locus-no-code-line-numbers) .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin {
+  counter-set: locus-code 0;
+}
+body:not(.locus-no-code-line-numbers) .markdown-source-view.mod-cm6 .cm-line.HyperMD-codeblock:not(.HyperMD-codeblock-begin, .HyperMD-codeblock-end, .HyperMD-list-line) {
+  counter-increment: locus-code;
+  padding-inline-start: calc(var(--size-4-4) + 4ch);
+}
+body:not(.locus-no-code-line-numbers) .markdown-source-view.mod-cm6 .cm-line.HyperMD-codeblock:not(.HyperMD-codeblock-begin, .HyperMD-codeblock-end, .HyperMD-list-line)::before {
+  content: counter(locus-code);
+  display: inline-block;
+  width: 3ch;
+  margin-inline: -4ch 1ch;
+  text-align: right;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Sequences: wrap anywhere so a 5 kb insert doesn't become one endless line. */
+.markdown-rendered :is(pre, pre > code):is([class~="language-fasta" i], [class~="language-fastq" i],
+  [class~="language-dna" i], [class~="language-rna" i], [class~="language-protein" i]) {
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* Tab-delimited records: never wrap, keep columns aligned, scroll sideways. */
+.markdown-rendered :is(pre, pre > code):is([class~="language-sam" i], [class~="language-vcf" i],
+  [class~="language-bed" i], [class~="language-gtf" i], [class~="language-gff" i],
+  [class~="language-tsv" i]) {
+  white-space: pre;
+  overflow-x: auto;
+  tab-size: 8;
+}
+
+
+/* ---------- Equations ---------- */
+
+/* Display math ($$ … $$) is numbered (1), (2), … at the right margin, in both
+   reading view and live preview; inline math is not. */
+body:not(.locus-no-equation-numbers) .math-block {
+  position: relative;
+  counter-increment: locus-eq;
+}
+body:not(.locus-no-equation-numbers) .math-block::after {
+  content: "(" counter(locus-eq) ")";
+  position: absolute;
+  inset-inline-end: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-family: var(--font-text);
+  font-size: var(--font-text-size);
+  font-variant-numeric: tabular-nums;
+}
+/* Live preview's edit button appears in the same corner on hover. */
+body:not(.locus-no-equation-numbers) .cm-embed-block.math-block:hover::after {
+  visibility: hidden;
+}
+
+
+/* ---------- Tables (booktabs) ---------- */
+
+body:not(.locus-grid-tables) {
+  --table-border-width: 0px;
+  --table-header-border-width: 0px;
+  --table-column-first-border-width: 0px;
+  --table-column-last-border-width: 0px;
+  --table-row-last-border-width: 0px;
+  --table-header-weight: var(--font-semibold);
+  --table-row-background-hover: var(--background-modifier-hover);
+  --table-cell-vertical-alignment: baseline;
+}
+
+body:not(.locus-grid-tables) :is(.markdown-rendered, .cm-table-widget) table {
+  border-collapse: collapse;
+  border-top: 1.5px solid var(--text-normal);
+  border-bottom: 1.5px solid var(--text-normal);
+}
+
+body:not(.locus-grid-tables) :is(.markdown-rendered, .cm-table-widget) thead th {
+  border-bottom: 1px solid var(--text-normal);
+}
+
+:is(.markdown-rendered, .cm-table-widget) :is(th, td) {
+  padding: 0.3em 0.9em;
+}
+
+
+/* ---------- Tags, properties, highlights ---------- */
+
+body {
+  --tag-radius: 3px;
+  --tag-padding-x: 0.4em;
+  --tag-padding-y: 0.1em;
+  --tag-size: 0.85em;
+}
+
+.markdown-rendered a.tag,
+.markdown-source-view.mod-cm6 .cm-hashtag {
+  font-family: var(--font-monospace);
+}
+
+.metadata-property-key {
+  font-family: var(--font-monospace);
+  font-size: var(--font-ui-smaller);
+}
+
+.markdown-rendered mark,
+.markdown-source-view.mod-cm6 .cm-highlight {
+  color: var(--text-normal);
+}
+
+
+/* ---------- Editor ---------- */
+
+body:not(.locus-no-active-line) .markdown-source-view.mod-cm6 .cm-line.cm-active:not(.HyperMD-codeblock) {
+  background-color: color-mix(in oklch, var(--interactive-accent) 5%, transparent);
+}
+
+
+/* ---------- Callouts ---------- */
+
+body {
+  --callout-radius: 3px;
+  --callout-border-width: 0 0 0 3px;
+  --callout-border-opacity: 0.85;
+  --callout-padding: 0.65em 1em 0.65em 1.1em;
+
+  --callout-default: var(--oi-blue);
+  --callout-info: var(--oi-sky);
+  --callout-todo: var(--oi-blue);
+  --callout-summary: var(--oi-sky);
+  --callout-tip: var(--oi-green);
+  --callout-success: var(--oi-green);
+  --callout-important: var(--oi-vermillion);
+  --callout-question: var(--oi-orange);
+  --callout-warning: var(--oi-orange);
+  --callout-fail: var(--oi-vermillion);
+  --callout-error: var(--oi-vermillion);
+  --callout-bug: var(--oi-vermillion);
+  --callout-example: var(--oi-violet);
+  --callout-quote: var(--text-muted);
+}
+
+.callout {
+  background-color: color-mix(in oklch, var(--callout-color) 6%, transparent);
+}
+
+.callout[data-callout="method"],
+.callout[data-callout="protocol"] {
+  --callout-color: var(--oi-blue);
+  --callout-icon: lucide-flask-conical;
+}
+.callout[data-callout="result"],
+.callout[data-callout="finding"] {
+  --callout-color: var(--oi-green);
+  --callout-icon: lucide-line-chart;
+}
+.callout[data-callout="hypothesis"],
+.callout[data-callout="idea"] {
+  --callout-color: var(--oi-yellow);
+  --callout-icon: lucide-lightbulb;
+}
+.callout[data-callout="dataset"],
+.callout[data-callout="data"] {
+  --callout-color: var(--oi-sky);
+  --callout-icon: lucide-database;
+}
+.callout[data-callout="cmd"],
+.callout[data-callout="command"],
+.callout[data-callout="run"] {
+  --callout-color: var(--text-muted);
+  --callout-icon: lucide-terminal;
+}
+.callout[data-callout="figure"] {
+  --callout-color: var(--oi-violet);
+  --callout-icon: lucide-image;
+}
+.callout[data-callout="paper"],
+.callout[data-callout="reference"] {
+  --callout-color: var(--oi-purple);
+  --callout-icon: lucide-book-open;
+}
+.callout[data-callout="caveat"],
+.callout[data-callout="problem"] {
+  --callout-color: var(--oi-vermillion);
+  --callout-icon: lucide-octagon-alert;
+}
+.callout[data-callout="sequence"],
+.callout[data-callout="seq"],
+.callout[data-callout="primer"] {
+  --callout-color: var(--oi-green);
+  --callout-icon: lucide-dna;
+}
+.callout[data-callout="meeting"] {
+  --callout-color: var(--oi-blue);
+  --callout-icon: lucide-users;
+}
+.callout[data-callout="feedback"] {
+  --callout-color: var(--oi-sky);
+  --callout-icon: lucide-message-square-text;
+}
+.callout[data-callout="email"] {
+  --callout-color: var(--text-muted);
+  --callout-icon: lucide-mail;
+}
+.callout[data-callout="ai"] {
+  --callout-color: var(--oi-violet);
+  --callout-icon: lucide-sparkles;
+}
+
+/* Primers, guides, barcodes: monospace and breakable. */
+.callout:is([data-callout="sequence"], [data-callout="seq"], [data-callout="primer"]) .callout-content {
+  font-family: var(--font-monospace);
+  font-size: var(--code-size);
+  word-break: break-all;
+}
+
+
+/* ---------- Task states ----------
+ * Each alternate checkbox gets a fill color and a white glyph, in the same
+ * box as the stock [x].
+ */
+
+body:not(.locus-no-checkboxes) input.task-list-item-checkbox:checked {
+  --checkbox-color: var(--oi-green);
+  --checkbox-color-hover: var(--oi-green);
+}
+
+body:not(.locus-no-checkboxes) :is(input[data-task], li[data-task] > input, li[data-task] > p > input):checked {
+  --checkbox-color-hover: var(--checkbox-color);
+}
+
+body:not(.locus-no-checkboxes) :is(input[data-task=">"], li[data-task=">"] > input, li[data-task=">"] > p > input):checked {
+  --checkbox-color: var(--text-faint);
+}
+body:not(.locus-no-checkboxes) :is(input[data-task=">"], li[data-task=">"] > input, li[data-task=">"] > p > input):checked::after {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12h15M13 5l7 7-7 7'/%3E%3C/svg%3E");
+}
+
+body:not(.locus-no-checkboxes) :is(input[data-task="<"], li[data-task="<"] > input, li[data-task="<"] > p > input):checked {
+  --checkbox-color: var(--oi-blue);
+}
+body:not(.locus-no-checkboxes) :is(input[data-task="<"], li[data-task="<"] > input, li[data-task="<"] > p > input):checked::after {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7v5l3 2'/%3E%3C/svg%3E");
+}
+
+body:not(.locus-no-checkboxes) :is(input[data-task="-"], li[data-task="-"] > input, li[data-task="-"] > p > input):checked {
+  --checkbox-color: var(--text-faint);
+}
+body:not(.locus-no-checkboxes) :is(input[data-task="-"], li[data-task="-"] > input, li[data-task="-"] > p > input):checked::after {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='4' stroke-linecap='round'%3E%3Cpath d='M5 12h14'/%3E%3C/svg%3E");
+}
+
+/* In progress: half-filled box, no glyph. */
+body:not(.locus-no-checkboxes) :is(input[data-task="/"], li[data-task="/"] > input, li[data-task="/"] > p > input):checked {
+  --checkbox-color: var(--oi-orange);
+  background: linear-gradient(135deg, var(--oi-orange) 50%, transparent 50%);
+}
+body:not(.locus-no-checkboxes) :is(input[data-task="/"], li[data-task="/"] > input, li[data-task="/"] > p > input):checked::after {
+  display: none;
+}
+
+body:not(.locus-no-checkboxes) :is(input[data-task="?"], li[data-task="?"] > input, li[data-task="?"] > p > input):checked {
+  --checkbox-color: var(--oi-orange);
+}
+body:not(.locus-no-checkboxes) :is(input[data-task="?"], li[data-task="?"] > input, li[data-task="?"] > p > input):checked::after {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8.5 8.5a3.5 3.5 0 1 1 5 3.2c-1 .5-1.5 1.3-1.5 2.3v.5M12 19.5h.01'/%3E%3C/svg%3E");
+}
+
+body:not(.locus-no-checkboxes) :is(input[data-task="!"], li[data-task="!"] > input, li[data-task="!"] > p > input):checked {
+  --checkbox-color: var(--oi-vermillion);
+}
+body:not(.locus-no-checkboxes) :is(input[data-task="!"], li[data-task="!"] > input, li[data-task="!"] > p > input):checked::after {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='4' stroke-linecap='round'%3E%3Cpath d='M12 4.5v9M12 19.5h.01'/%3E%3C/svg%3E");
+}
+
+body:not(.locus-no-checkboxes) :is(input[data-task="i"], li[data-task="i"] > input, li[data-task="i"] > p > input):checked {
+  --checkbox-color: var(--oi-sky);
+}
+body:not(.locus-no-checkboxes) :is(input[data-task="i"], li[data-task="i"] > input, li[data-task="i"] > p > input):checked::after {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='4' stroke-linecap='round'%3E%3Cpath d='M12 10.5v9M12 4.5h.01'/%3E%3C/svg%3E");
+}
+
+/* Idea: yellow box needs a dark glyph to stay legible. */
+body:not(.locus-no-checkboxes) :is(input[data-task="I"], li[data-task="I"] > input, li[data-task="I"] > p > input):checked {
+  --checkbox-color: var(--oi-yellow-fill);
+  --checkbox-marker-color: #1d1e1c;
+}
+body:not(.locus-no-checkboxes) :is(input[data-task="I"], li[data-task="I"] > input, li[data-task="I"] > p > input):checked::after {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5M9 18h6M10 22h4'/%3E%3C/svg%3E");
+  -webkit-mask-size: 75%;
+}
+
+body:not(.locus-no-checkboxes) :is(input[data-task="*"], li[data-task="*"] > input, li[data-task="*"] > p > input):checked {
+  --checkbox-color: var(--oi-yellow-fill);
+  --checkbox-marker-color: #1d1e1c;
+}
+body:not(.locus-no-checkboxes) :is(input[data-task="*"], li[data-task="*"] > input, li[data-task="*"] > p > input):checked::after {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5-4.8-4.6 6.6-.9z'/%3E%3C/svg%3E");
+  -webkit-mask-size: 80%;
+}
+
+body:not(.locus-no-checkboxes) :is(input[data-task="b"], li[data-task="b"] > input, li[data-task="b"] > p > input):checked {
+  --checkbox-color: var(--oi-purple);
+}
+body:not(.locus-no-checkboxes) :is(input[data-task="b"], li[data-task="b"] > input, li[data-task="b"] > p > input):checked::after {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 3h12v18l-6-4-6 4z'/%3E%3C/svg%3E");
+}
+
+/* Text of the task line: done and cancelled are struck through; forwarded
+   items are muted (they live on elsewhere); everything else reads normally. */
+body:not(.locus-no-checkboxes) :is(
+  ul > li.task-list-item[data-task="-"],
+  .markdown-source-view.mod-cm6 .HyperMD-task-line[data-task="-"]) {
+  text-decoration: line-through;
+  color: var(--text-faint);
+}
+body:not(.locus-no-checkboxes) :is(
+  ul > li.task-list-item[data-task=">"],
+  .markdown-source-view.mod-cm6 .HyperMD-task-line[data-task=">"]) {
+  color: var(--text-muted);
+}
+
+
+/* ---------- Tasks plugin: due-date urgency ----------
+ * Tasks marks each rendered task and its due-date label with data-task-due:
+ * "today", "past-1d" … "past-7d", "past-far", or "future-…". Only open tasks
+ * are flagged: overdue in vermillion, due today in orange.
+ */
+
+body:not(.locus-no-task-urgency) :is(li.task-list-item, .task-due)[data-task-due^="past-"] {
+  --locus-urgency: var(--oi-vermillion);
+}
+body:not(.locus-no-task-urgency) :is(li.task-list-item, .task-due)[data-task-due="today"] {
+  --locus-urgency: var(--oi-orange);
+}
+body:not(.locus-no-task-urgency) li.task-list-item:is([data-task-due^="past-"], [data-task-due="today"]):not([data-task-status-type="DONE"], [data-task-status-type="CANCELLED"], [data-task="x"], [data-task="X"], [data-task="-"]) > .task-list-item-checkbox {
+  border-color: var(--locus-urgency);
+}
+body:not(.locus-no-task-urgency) li.task-list-item:not([data-task-status-type="DONE"], [data-task-status-type="CANCELLED"], [data-task="x"], [data-task="X"], [data-task="-"]) .task-due:is([data-task-due^="past-"], [data-task-due="today"]) {
+  color: var(--locus-urgency);
+  background-color: color-mix(in oklch, var(--locus-urgency) 12%, transparent);
+  border-radius: 3px;
+  padding-inline: 0.3em;
+  font-weight: var(--font-semibold);
+  white-space: nowrap;
+}
+
+
+/* ---------- File explorer: folder colors ----------
+ * Twelve hues 30° apart at one OKLCH lightness and chroma (C=0.13, clipped to
+ * sRGB), in hue order, so top-level folders read as an even spectrum.
+ * The first child of the list is a spacer, hence the +2 offset.
+ */
+
+.theme-light {
+  --folder-1: #a74541;
+  --folder-2: #9f5102;
+  --folder-3: #856302;
+  --folder-4: #677002;
+  --folder-5: #2e7c35;
+  --folder-6: #007b66;
+  --folder-7: #047781;
+  --folder-8: #01729f;
+  --folder-9: #4365b3;
+  --folder-10: #6f57ab;
+  --folder-11: #8d4b92;
+  --folder-12: #a0446d;
+}
+
+.theme-dark {
+  --folder-1: #ffa098;
+  --folder-2: #fea668;
+  --folder-3: #e4b750;
+  --folder-4: #bbc75f;
+  --folder-5: #86d489;
+  --folder-6: #49d9b9;
+  --folder-7: #2ad5e5;
+  --folder-8: #69caff;
+  --folder-9: #9ebdff;
+  --folder-10: #c3affe;
+  --folder-11: #e8a0ec;
+  --folder-12: #ff9ac2;
+}
+
+body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder:nth-child(12n+2) { --locus-folder: var(--folder-1); }
+body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder:nth-child(12n+3) { --locus-folder: var(--folder-2); }
+body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder:nth-child(12n+4) { --locus-folder: var(--folder-3); }
+body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder:nth-child(12n+5) { --locus-folder: var(--folder-4); }
+body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder:nth-child(12n+6) { --locus-folder: var(--folder-5); }
+body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder:nth-child(12n+7) { --locus-folder: var(--folder-6); }
+body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder:nth-child(12n+8) { --locus-folder: var(--folder-7); }
+body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder:nth-child(12n+9) { --locus-folder: var(--folder-8); }
+body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder:nth-child(12n+10) { --locus-folder: var(--folder-9); }
+body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder:nth-child(12n+11) { --locus-folder: var(--folder-10); }
+body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder:nth-child(12n+12) { --locus-folder: var(--folder-11); }
+body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder:nth-child(12n+13) { --locus-folder: var(--folder-12); }
+
+body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder {
+  --nav-indentation-guide-color: color-mix(in oklch, var(--locus-folder) 45%, transparent);
+}
+body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder > .nav-folder-title {
+  color: var(--locus-folder);
+}
+
+/* Iconize bakes its icon color into the svg's fill or stroke attribute and an
+   inline style; route both through the folder color so icon and name agree. */
+body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder > .nav-folder-title .iconize-icon {
+  color: var(--locus-folder) !important;
+}
+body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder > .nav-folder-title .iconize-icon svg[fill]:not([fill="none"]) {
+  fill: currentColor;
+}
+body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder > .nav-folder-title .iconize-icon svg[stroke]:not([stroke="none"]) {
+  stroke: currentColor;
+}
+
+
+/* ---------- Graph ---------- */
+
+.theme-light,
+.theme-dark {
+  --graph-node: var(--text-muted);
+  --graph-node-focused: var(--oi-vermillion);
+  --graph-node-tag: var(--oi-green);
+  --graph-node-attachment: var(--oi-orange);
+  --graph-node-unresolved: var(--text-faint);
+}
