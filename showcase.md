@@ -6,13 +6,8 @@ Open this note in a vault with Locus enabled to see every feature, in both readi
 
 ### Level three
 #### Level four
-#### Another level four
 ##### Level five
 ###### Level six
-
-### Numbering continues
-
-The headings above read 1, 1.1, 1.1.1, 1.1.2, 1.1.2.1, 1.1.2.1.1; this one is 1.2.
 
 Peaks were called with `macs2 callpeak -f BEDPE` on [[pseudobulk fragments]]; see the [ENCODE blacklist](https://github.com/Boyle-Lab/Blacklist). Tagged #proj/example #labmeeting. ==FRiP below 0.2 was excluded.== **Bold** and *italic*.
 

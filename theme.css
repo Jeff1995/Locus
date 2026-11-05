@@ -21,11 +21,6 @@ settings:
     description: Use plain text color for headings
     type: class-toggle
   -
-    id: locus-no-heading-numbers
-    title: Disable heading numbers
-    description: Do not number H2–H6 (1, 1.1, 1.1.1, …)
-    type: class-toggle
-  -
     id: locus-no-equation-numbers
     title: Disable equation numbers
     description: Do not number display math blocks
@@ -210,69 +205,9 @@ body.locus-mono-headings {
   --h6-color: var(--text-muted);
 }
 
-/* Heading numbers: H1 is the note title, so numbering starts at H2 (1, 1.1, 1.1.1)
- * and every H1 restarts it. Reading view wraps each heading in a sibling
- * div.el-hN; live preview gives each heading line .HyperMD-header-N. Both
- * views render only the part of a note near the viewport, so in very long
- * notes the count covers only headings currently in the DOM. */
-
-/* All note-level counters (headings, code lines, equations) are created once on
-   the container, in one rule since a second counter-reset would override it.
-   Siblings then zero them with counter-set, because a sibling's counter-reset
-   would only start a nested counter that later siblings never see. */
-:is(.markdown-preview-sizer, .markdown-source-view.mod-cm6 .cm-content) {
-  counter-reset: locus-h2 locus-h3 locus-h4 locus-h5 locus-h6 locus-code locus-eq;
-}
-body:not(.locus-no-heading-numbers) :is(.markdown-preview-sizer > .el-h1, .is-live-preview .HyperMD-header-1) {
-  counter-set: locus-h2 0 locus-h3 0 locus-h4 0 locus-h5 0 locus-h6 0;
-}
-body:not(.locus-no-heading-numbers) :is(.markdown-preview-sizer > .el-h2, .is-live-preview .HyperMD-header-2) {
-  counter-increment: locus-h2;
-  counter-set: locus-h3 0 locus-h4 0 locus-h5 0 locus-h6 0;
-}
-body:not(.locus-no-heading-numbers) :is(.markdown-preview-sizer > .el-h3, .is-live-preview .HyperMD-header-3) {
-  counter-increment: locus-h3;
-  counter-set: locus-h4 0 locus-h5 0 locus-h6 0;
-}
-body:not(.locus-no-heading-numbers) :is(.markdown-preview-sizer > .el-h4, .is-live-preview .HyperMD-header-4) {
-  counter-increment: locus-h4;
-  counter-set: locus-h5 0 locus-h6 0;
-}
-body:not(.locus-no-heading-numbers) :is(.markdown-preview-sizer > .el-h5, .is-live-preview .HyperMD-header-5) {
-  counter-increment: locus-h5;
-  counter-set: locus-h6 0;
-}
-body:not(.locus-no-heading-numbers) :is(.markdown-preview-sizer > .el-h6, .is-live-preview .HyperMD-header-6) {
-  counter-increment: locus-h6;
-}
-
-body:not(.locus-no-heading-numbers) :is(.markdown-preview-sizer > div > :is(h2, h3, h4, h5, h6),
-  .is-live-preview :is(.HyperMD-header-2, .HyperMD-header-3, .HyperMD-header-4, .HyperMD-header-5, .HyperMD-header-6))::before {
-  margin-inline-end: 0.5em;
-  color: color-mix(in oklch, currentColor 60%, transparent);
-  font-variant-numeric: tabular-nums;
-}
-body:not(.locus-no-heading-numbers) :is(.markdown-preview-sizer > .el-h2 > h2, .is-live-preview .HyperMD-header-2)::before {
-  content: counter(locus-h2);
-}
-body:not(.locus-no-heading-numbers) :is(.markdown-preview-sizer > .el-h3 > h3, .is-live-preview .HyperMD-header-3)::before {
-  content: counter(locus-h2) "." counter(locus-h3);
-}
-body:not(.locus-no-heading-numbers) :is(.markdown-preview-sizer > .el-h4 > h4, .is-live-preview .HyperMD-header-4)::before {
-  content: counter(locus-h2) "." counter(locus-h3) "." counter(locus-h4);
-}
-body:not(.locus-no-heading-numbers) :is(.markdown-preview-sizer > .el-h5 > h5, .is-live-preview .HyperMD-header-5)::before {
-  content: counter(locus-h2) "." counter(locus-h3) "." counter(locus-h4) "." counter(locus-h5);
-}
-body:not(.locus-no-heading-numbers) :is(.markdown-preview-sizer > .el-h6 > h6, .is-live-preview .HyperMD-header-6)::before {
-  content: counter(locus-h2) "." counter(locus-h3) "." counter(locus-h4) "." counter(locus-h5) "." counter(locus-h6);
-}
-
 /* Outline pane: items carry no heading level in the DOM, only nesting, so
- * color and number follow depth. Depth equals level whenever a note starts
- * with its one H1 and never skips a level. Each children container opens a
- * nested counter, so counters() yields 1, 1.1, 1.1.1 with depth 1 (the H1)
- * left unnumbered. */
+ * color follows depth. Depth equals level whenever a note starts with its one
+ * H1 and never skips a level. */
 
 .workspace-leaf-content[data-type="outline"] .view-content > div > .tree-item > .tree-item-self {
   color: var(--h1-color);
@@ -300,19 +235,6 @@ body:not(.locus-no-heading-numbers) :is(.markdown-preview-sizer > .el-h6 > h6, .
   > .tree-item-children > .tree-item > .tree-item-children > .tree-item
   > .tree-item-children > .tree-item > .tree-item-self {
   color: var(--h6-color);
-}
-
-body:not(.locus-no-heading-numbers) .workspace-leaf-content[data-type="outline"] .tree-item-children {
-  counter-reset: locus-outline;
-}
-body:not(.locus-no-heading-numbers) .workspace-leaf-content[data-type="outline"] .tree-item-children > .tree-item {
-  counter-increment: locus-outline;
-}
-body:not(.locus-no-heading-numbers) .workspace-leaf-content[data-type="outline"] .tree-item-children > .tree-item > .tree-item-self > .tree-item-inner::before {
-  content: counters(locus-outline, ".");
-  margin-inline-end: 0.5em;
-  color: color-mix(in oklch, currentColor 60%, transparent);
-  font-variant-numeric: tabular-nums;
 }
 
 .markdown-rendered a:hover,
@@ -425,6 +347,14 @@ body {
 .markdown-rendered pre[class~="language-gff" i]::after { content: "GFF"; }
 .markdown-rendered pre[class~="language-tsv" i]::after { content: "TSV"; }
 .markdown-rendered pre[class~="language-csv" i]::after { content: "CSV"; }
+
+/* Code-line and equation counters are created once on the note container, in
+   one rule since a second counter-reset would override it. Code blocks then
+   restart theirs with counter-set, because a sibling's counter-reset would
+   only start a nested counter that later lines never see. */
+:is(.markdown-preview-sizer, .markdown-source-view.mod-cm6 .cm-content) {
+  counter-reset: locus-code locus-eq;
+}
 
 /* Line numbers, editor only: reading view renders a code block as one run of
    text with no per-line elements to count. Fence lines restart the count. */

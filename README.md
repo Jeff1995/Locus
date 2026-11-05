@@ -24,11 +24,11 @@ Copy `showcase.md` into your vault and open it to see every feature.
 
 ## Features
 
-**Heading numbers:** in reading view and live preview, H2–H6 are numbered `1`, `1.1`, `1.1.2`, …; source mode is left as plain text. H1 is treated as the note title, so it gets no number, and each H1 restarts the count. A skipped level shows as `0` (for example, an H4 directly under an H2 is `1.0.1`). The numbers are display-only and never written into your files. Obsidian only renders the part of a long note near the screen, so in a note several screens long the numbers can be off after you scroll far down. Turn numbering off with **Disable heading numbers** in Style Settings.
+**Outline pane:** headings in the Outline get the same colors as in the note. The pane doesn't record each item's heading level, only how deeply it's nested, so Locus colors by depth and assumes the top level is the H1 title. This matches the note whenever it starts with a single H1 and doesn't skip levels.
 
-The **Outline** pane gets the same colors and numbers. The pane doesn't record each item's heading level, only how deeply it's nested, so Locus colors and numbers by depth. The top level is assumed to be the H1 title and gets no number. This matches the note whenever it starts with a single H1 and doesn't skip levels. In a note with no H1, the Outline treats the top-level H2s as titles: unnumbered and colored like H1.
+Locus doesn't number headings. For numbered headings, use the [Number Headings](https://github.com/onlyafly/number-headings-obsidian) community plugin, which writes the numbers into the headings themselves.
 
-**Equation numbers:** display math (`$$ … $$`) is numbered (1), (2), … at the right margin in reading view and live preview; inline math is not. In live preview the number hides while the pointer is over the block, so it doesn't collide with the edit button. Long notes have the same scrolling limitation as heading numbers.
+**Equation numbers:** display math (`$$ … $$`) is numbered (1), (2), … at the right margin in reading view and live preview; inline math is not. In live preview the number hides while the pointer is over the block, so it doesn't collide with the edit button. Obsidian only renders the part of a long note near the screen, so in a note several screens long the numbers can be off after you scroll far down.
 
 **Code line numbers:** code blocks show line numbers in the editor (live preview and source mode). Reading view can't number lines, because it renders a code block as one run of text.
 
@@ -83,7 +83,7 @@ The **Outline** pane gets the same colors and numbers. The pane doesn't record e
 
 ## Options
 
-If the [Style Settings](https://github.com/mgmeyers/obsidian-style-settings) plugin is installed, you can turn off individual features: colored headings, heading numbers, equation numbers, code line numbers, due-date urgency, folder colors, booktabs tables, code labels, custom checkboxes, and the active-line tint. Every feature is on by default, with or without the plugin.
+If the [Style Settings](https://github.com/mgmeyers/obsidian-style-settings) plugin is installed, you can turn off individual features: colored headings, equation numbers, code line numbers, due-date urgency, folder colors, booktabs tables, code labels, custom checkboxes, and the active-line tint. Every feature is on by default, with or without the plugin.
 
 ## License
 
