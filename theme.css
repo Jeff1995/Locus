@@ -237,6 +237,26 @@ body.locus-mono-headings {
   color: var(--h6-color);
 }
 
+/* Inline elements in headings (links, equations, code, tags, highlights, bold,
+ * italic) keep the heading color. Obsidian colors them all through these
+ * variables, and backgrounds and hover underlines are left alone. */
+.markdown-rendered :is(h1, h2, h3, h4, h5, h6),
+.HyperMD-header {
+  --text-normal: currentColor;
+  --text-muted: currentColor;
+  --text-accent: currentColor;
+  --code-normal: currentColor;
+  --bold-color: currentColor;
+  --italic-color: currentColor;
+  --tag-color: currentColor;
+  --tag-color-hover: currentColor;
+  --link-color: currentColor;
+  --link-color-hover: currentColor;
+  --link-external-color: currentColor;
+  --link-external-color-hover: currentColor;
+  --link-unresolved-color: currentColor;
+}
+
 .markdown-rendered a:hover,
 .markdown-source-view .cm-hmd-internal-link:hover,
 .markdown-source-view .cm-url:hover {

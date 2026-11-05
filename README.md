@@ -79,7 +79,7 @@ Locus doesn't number headings. For numbered headings, use the [Number Headings](
 
 **Folder icons (Iconize):** a top-level folder's Iconize icon takes the same color as its name and indentation guide. To pick each folder's color yourself rather than use the spectrum, add a [CSS snippet](https://help.obsidian.md/snippets) that sets `--locus-folder` per folder path. [`snippets/folder-colors-example.css`](snippets/folder-colors-example.css) shows how: it keeps the hues chosen for each folder's icon and sets them to the theme's lightness.
 
-**Other details:** tags and property keys are set in monospace (they are identifiers), internal links are underlined only on hover, and the active line in the editor gets a faint tint.
+**Other details:** tags and property keys are set in monospace (they are identifiers), internal links are underlined only on hover, links, equations, code and other inline elements in a heading keep the heading color, and the active line in the editor gets a faint tint.
 
 ## Options
 
