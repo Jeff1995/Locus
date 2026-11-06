@@ -2,10 +2,10 @@
  * Locus — an Obsidian theme for computational biologists.
  *
  * Color is categorical throughout: callouts, syntax tokens and task states use
- * the colorblind-safe Okabe–Ito palette; top-level folders get an even
- * twelve-hue spectrum. Headings use the Okabe–Ito
+ * the colorblind-safe Okabe–Ito palette. Headings use the Okabe–Ito
  * hue family (plus a violet), but set to one OKLCH lightness and chroma, so no
  * level shouts louder than another; size alone carries the hierarchy.
+ * Folders share a single muted tint.
  * Tables are typeset booktabs-style with tabular numerals; genomic text formats
  * (FASTA/FASTQ, VCF/BED/SAM/GTF) get sensible wrapping in code blocks.
  */
@@ -36,7 +36,7 @@ settings:
   -
     id: locus-no-folder-colors
     title: Disable folder colors
-    description: Do not color top-level folders in the file explorer
+    description: Keep default folder name colors and each Iconize icon's own color
     type: class-toggle
   -
     id: locus-grid-tables
@@ -727,71 +727,43 @@ body:not(.locus-no-task-urgency) li.task-list-item:not([data-task-status-type="D
 }
 
 
-/* ---------- File explorer: folder colors ----------
- * Twelve hues 30° apart at one OKLCH lightness and chroma (C=0.13, clipped to
- * sRGB), in hue order, so top-level folders read as an even spectrum.
- * The first child of the list is a spacer, hence the +2 offset.
+/* ---------- Calendar plugin: note-length dots ----------
+ * The plugin has an on-accent dot style but never flags dots as active, so they
+ * stay --text-muted on the selected day's accent fill, at 1:1 contrast.
+ */
+
+#calendar-container .active {
+  --color-dot: var(--text-on-accent);
+}
+
+
+/* ---------- File explorer: folders and icons ----------
+ * Every folder shares one low-chroma tint of the accent hue (OKLCH C=0.06,
+ * L=0.42 light / 0.80 dark), a moderate step away from file names.
  */
 
 .theme-light {
-  --folder-1: #a74541;
-  --folder-2: #9f5102;
-  --folder-3: #856302;
-  --folder-4: #677002;
-  --folder-5: #2e7c35;
-  --folder-6: #007b66;
-  --folder-7: #047781;
-  --folder-8: #01729f;
-  --folder-9: #4365b3;
-  --folder-10: #6f57ab;
-  --folder-11: #8d4b92;
-  --folder-12: #a0446d;
+  --locus-folder: #2b526a;
 }
 
 .theme-dark {
-  --folder-1: #ffa098;
-  --folder-2: #fea668;
-  --folder-3: #e4b750;
-  --folder-4: #bbc75f;
-  --folder-5: #86d489;
-  --folder-6: #49d9b9;
-  --folder-7: #2ad5e5;
-  --folder-8: #69caff;
-  --folder-9: #9ebdff;
-  --folder-10: #c3affe;
-  --folder-11: #e8a0ec;
-  --folder-12: #ff9ac2;
+  --locus-folder: #9ac4e0;
 }
 
-body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder:nth-child(12n+2) { --locus-folder: var(--folder-1); }
-body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder:nth-child(12n+3) { --locus-folder: var(--folder-2); }
-body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder:nth-child(12n+4) { --locus-folder: var(--folder-3); }
-body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder:nth-child(12n+5) { --locus-folder: var(--folder-4); }
-body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder:nth-child(12n+6) { --locus-folder: var(--folder-5); }
-body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder:nth-child(12n+7) { --locus-folder: var(--folder-6); }
-body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder:nth-child(12n+8) { --locus-folder: var(--folder-7); }
-body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder:nth-child(12n+9) { --locus-folder: var(--folder-8); }
-body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder:nth-child(12n+10) { --locus-folder: var(--folder-9); }
-body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder:nth-child(12n+11) { --locus-folder: var(--folder-10); }
-body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder:nth-child(12n+12) { --locus-folder: var(--folder-11); }
-body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder:nth-child(12n+13) { --locus-folder: var(--folder-12); }
-
-body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder {
-  --nav-indentation-guide-color: color-mix(in oklch, var(--locus-folder) 45%, transparent);
-}
-body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder > .nav-folder-title {
-  color: var(--locus-folder);
+/* Through the nav variable, so hover and selection still override it. */
+body:not(.locus-no-folder-colors) .nav-folder-title {
+  --nav-item-color: var(--locus-folder);
 }
 
 /* Iconize bakes its icon color into the svg's fill or stroke attribute and an
-   inline style; route both through the folder color so icon and name agree. */
-body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder > .nav-folder-title .iconize-icon {
-  color: var(--locus-folder) !important;
+   inline style; route both through the surrounding text color. */
+body:not(.locus-no-folder-colors) :is(.iconize-icon, .iconize-icon-in-link, .iconize-title-icon, .workspace-tab-header-inner-icon[style*="color"]) {
+  color: inherit !important;
 }
-body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder > .nav-folder-title .iconize-icon svg[fill]:not([fill="none"]) {
+body:not(.locus-no-folder-colors) :is(.iconize-icon, .iconize-icon-in-link, .iconize-title-icon, .workspace-tab-header-inner-icon[style*="color"]) svg[fill]:not([fill="none"]) {
   fill: currentColor;
 }
-body:not(.locus-no-folder-colors) .nav-files-container > div > .nav-folder > .nav-folder-title .iconize-icon svg[stroke]:not([stroke="none"]) {
+body:not(.locus-no-folder-colors) :is(.iconize-icon, .iconize-icon-in-link, .iconize-title-icon, .workspace-tab-header-inner-icon[style*="color"]) svg[stroke]:not([stroke="none"]) {
   stroke: currentColor;
 }
 
