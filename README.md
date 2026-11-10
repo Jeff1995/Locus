@@ -1,6 +1,6 @@
 # Locus
 
-An Obsidian theme for computational biologists. Its colors are built on the colorblind-safe Okabe–Ito palette, the one you'd use in a figure.
+An Obsidian theme for computational biologists and bioinformaticians who keep their lab notebook in Obsidian. Its colors are built on the colorblind-friendly Okabe–Ito palette, the one you'd use in a figure.
 
 ![Locus in light and dark mode](screenshot.png)
 
@@ -16,13 +16,17 @@ An Obsidian theme for computational biologists. Its colors are built on the colo
 
 Requires Obsidian 1.15 or later.
 
-Once Locus is listed in the community theme directory, open **Settings → Appearance → Themes → Manage**, search for "Locus", and choose **Install and use**.
+Open **Settings → Appearance → Themes → Manage**, search for "Locus", and choose **Install and use**.
 
 To install manually, download `manifest.json` and `theme.css` from the [latest release](https://github.com/Jeff1995/Locus/releases/latest) into `<vault>/.obsidian/themes/Locus/`, then choose Locus under **Settings → Appearance → Themes**.
 
 Copy `showcase.md` into your vault and open it to see every feature.
 
 ## Features
+
+![Headings, inline elements, a booktabs table, numbered equations, all task states, all custom callouts and labeled code blocks in light mode](screenshots/features-light.png)
+
+![The same notes in dark mode](screenshots/features-dark.png)
 
 **Outline pane:** headings in the Outline get the same colors as in the note. The pane doesn't record each item's heading level, only how deeply it's nested, so Locus colors by depth and assumes the top level is the H1 title. This matches the note whenever it starts with a single H1 and doesn't skip levels.
 
